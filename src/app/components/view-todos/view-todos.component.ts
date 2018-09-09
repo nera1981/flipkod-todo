@@ -1,5 +1,5 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {MatDialog, MatDialogConfig, MatPaginator, MatSort} from '@angular/material';
+import {AfterViewInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {MatDialog, MatDialogConfig, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {ViewTodosDataSource} from './view-todos-datasource';
 import {NewTodoDialogComponent} from '../new-todo-dialog/new-todo-dialog.component';
 import {Subscription} from 'rxjs';
@@ -11,16 +11,19 @@ import {ConfirmationService} from '../../services/confirmation.service';
 import {ConfirmationButtonAction} from '../confirmation-dialog/confirmation-dialog.component';
 import {Router} from '@angular/router';
 import {EditTodoDialogComponent} from '../edit-todo-dialog/edit-todo-dialog.component';
+import {Todo} from '../../models/todo';
 
 @Component({
   selector: 'app-view-todos',
   templateUrl: './view-todos.component.html',
   styleUrls: ['./view-todos.component.css']
 })
-export class ViewTodosComponent implements OnInit, OnDestroy {
+export class ViewTodosComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-  dataSource: ViewTodosDataSource;
+  // dataSource: ViewTodosDataSource;
+  todos: Todo[] = [];
+  dataSource = new MatTableDataSource<Todo>(this.todos);
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
   displayedColumns = ['select', 'id', 'name', 'description', 'created', 'editAction', 'detailsAction'];
@@ -29,27 +32,47 @@ export class ViewTodosComponent implements OnInit, OnDestroy {
   myCheckbox: FormControl = new FormControl();
 
 
+  idFilter = new FormControl('');
+
+  nameFilter = new FormControl('');
+
+  descriptionFilter = new FormControl('');
+
+  createdFilter = new FormControl('');
+
+
+  filterValues = {
+    id: '',
+    name: '',
+    description: '',
+    created: ''
+  };
+
   constructor(private dialog: MatDialog,
               private router: Router,
               private db: AngularFireDatabase,
               private todoDataService: TodoDataService,
               private confirmationService: ConfirmationService) {
+    this.dataSource.filterPredicate = this.createFilter();
+
   }
 
   ngOnInit() {
-    this.myCheckbox.valueChanges.subscribe(value => {
-    });
+    this.loadTodos();
+    this.subscribeForFilterChanges();
     this.todosToRemove = [];
+  }
+
+  private loadTodos() {
     this.todosSubscription = this.todoDataService.getAll().snapshotChanges().pipe(
       map(actions =>
         actions.map(a => ({key: a.key, ...a.payload.val()}))
       )
     ).subscribe(items => {
-      this.dataSource = new ViewTodosDataSource(this.paginator, this.sort);
+      // this.dataSource = new ViewTodosDataSource(this.paginator, this.sort);
       this.dataSource.data = items;
-
+      this.todos = items;
     });
-
   }
 
   ngOnDestroy() {
@@ -93,6 +116,11 @@ export class ViewTodosComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
   removeTodos() {
     this.confirmationService.areYouSureDelete('Are you sure you want delete these items?')
       .subscribe(result => {
@@ -104,6 +132,48 @@ export class ViewTodosComponent implements OnInit, OnDestroy {
         }
       });
 
+  }
+
+  subscribeForFilterChanges() {
+    this.idFilter.valueChanges
+      .subscribe(
+        id => {
+          this.filterValues.id = id;
+          this.dataSource.filter = JSON.stringify(this.filterValues);
+        }
+      );
+    this.nameFilter.valueChanges
+      .subscribe(
+        name => {
+          this.filterValues.name = name;
+          this.dataSource.filter = JSON.stringify(this.filterValues);
+        }
+      );
+    this.descriptionFilter.valueChanges
+      .subscribe(
+        description => {
+          this.filterValues.description = description;
+          this.dataSource.filter = JSON.stringify(this.filterValues);
+        }
+      );
+    this.createdFilter.valueChanges
+      .subscribe(
+        created => {
+          this.filterValues.created = created;
+          this.dataSource.filter = JSON.stringify(this.filterValues);
+        }
+      );
+  }
+
+  createFilter(): (data: any, filter: string) => boolean {
+    const filterFunction = function (data, filter): boolean {
+      const searchTerms = JSON.parse(filter);
+      return data.name.toLowerCase().indexOf(searchTerms.name) !== -1
+        && data.id.toString().toLowerCase().indexOf(searchTerms.id) !== -1
+        && data.description.toLowerCase().indexOf(searchTerms.description) !== -1
+        && data.created.toLowerCase().indexOf(searchTerms.created) !== -1;
+    };
+    return filterFunction;
   }
 
 }
