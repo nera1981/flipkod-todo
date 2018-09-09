@@ -1,0 +1,25 @@
+<div style="text-align: center;">
+  <i *ngIf="success == true" class="material-icons"
+     style="margin-top: 9.5px;border-radius: 50%;width: 45px;height: 45px;line-height: 45px;vertical-align: middle;text-align: center;background-color: #a5dc86;color: white;">
+    done
+  </i>
+  <i *ngIf="error == true" class="material-icons"
+     style="margin-top: 9.5px;border-radius: 50%;width: 45px;height: 45px;line-height: 45px;vertical-align: middle;text-align: center;background-color: #f44336;color: white;">
+    priority_high
+  </i>
+</div>
+<h5 style="text-align: center;font-size: 1.2rem;
+    text-align: center; padding-top: 1em;
+    line-height: 1.6rem;">{{title}}</h5>
+<hr>
+<p *ngIf="message && !html" style="padding-left: 1em;">{{message}}</p>
+<div *ngIf="html" [innerHTML]="message"></div>
+<br>
+<div style="text-align: center;">
+  <ng-template ngFor let-button [ngForOf]="buttons">
+    <button style="margin-bottom: 1em; margin-left: 2em" [ngStyle]="{'background-color':  button.color, 'color': button.textcolor}"
+            mat-raised-button
+            (click)="dialogRef.close(button.action)">{{button.name}}
+    </button>
+  </ng-template>
+</div>

@@ -1,0 +1,68 @@
+.table-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 300px;
+}
+
+.table-header {
+  min-height: 64px;
+  padding: 8px 24px 0;
+}
+
+.mat-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+
+p {
+  font-family: Lato;
+}
+
+table {
+  width: 100%;
+}
+
+.header {
+  padding: 5px;
+}
+
+.filter {
+  margin-left: -15%;
+  padding-top: 15%;
+  width: 60%;
+  display: block!important;
+}
+
+.filter2 {
+  margin-left: -6%;
+  padding-top: 15%;
+  width: 60%;
+  display: block!important;
+}
+
+.filter3 {
+  margin-left: -25%;
+  padding-top: 15%;
+  width: 60%;
+  display: block!important;
+}
+
+.filter4 {
+  margin-left: -19%;
+  padding-top: 15%;
+  width: 60%;
+  display: block!important;
+}
+
+.lightColor{
+  color: darkgrey;
+}
+
+.positionLeft{
+  margin-left: 70%;
+}

@@ -1,0 +1,27 @@
+<div class="button-row">
+  <a mat-raised-button color="primary" [routerLink]="['/todos']">Back</a>
+</div>
+
+<mat-card class="example-card" *ngIf="todo">
+  <mat-card-header>
+    <mat-card-title><h2>{{todo.name}}</h2></mat-card-title>
+    <mat-card-subtitle></mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <dl>
+      <dt>Description:</dt>
+      <dd>{{todo.description}}</dd>
+      <dt>Created:</dt>
+      <dd>{{todo.created| date: 'd/M/yy, h:mm a'}}</dd>
+
+    </dl>
+  </mat-card-content>
+  <mat-card-actions>
+    <!--<a mat-raised-button color="primary" (click)="openEditTodoDialog(todo)">-->
+      <!--<mat-icon>edit</mat-icon>-->
+    <!--</a>-->
+    <a mat-raised-button color="warn" (click)="deleteTodo()">
+      <mat-icon>delete</mat-icon>
+    </a>
+  </mat-card-actions>
+</mat-card>
