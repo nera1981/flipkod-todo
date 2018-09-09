@@ -29,7 +29,7 @@ export class ViewTodosComponent implements OnInit, OnDestroy, AfterViewInit {
   displayedColumns = ['select', 'id', 'name', 'description', 'created', 'editAction', 'detailsAction'];
   todosSubscription: Subscription;
   todosToRemove: string[];
-  myCheckbox: FormControl = new FormControl();
+  todoCheckbox: FormControl = new FormControl();
 
 
   idFilter = new FormControl('');

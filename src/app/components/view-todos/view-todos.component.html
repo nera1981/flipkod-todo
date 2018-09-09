@@ -14,7 +14,7 @@
     <ng-container matColumnDef="select">
       <mat-header-cell mat-header-cell *matHeaderCellDef mat-sort-header></mat-header-cell>
       <mat-cell mat-cell *matCellDef="let row">
-        <mat-checkbox [formControl]="myCheckbox" (change)="toggleSelect($event,row.key)" [checked]="false">
+        <mat-checkbox [formControl]="todoCheckbox" (change)="toggleSelect($event,row.key)" >
         </mat-checkbox>
       </mat-cell>
     </ng-container>
