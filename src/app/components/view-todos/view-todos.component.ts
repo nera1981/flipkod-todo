@@ -127,6 +127,7 @@ export class ViewTodosComponent implements OnInit, OnDestroy, AfterViewInit {
         if (result === ConfirmationButtonAction.CONFIRM) {
           this.todosToRemove.forEach(id => {
             this.todoDataService.delete(id);
+            this.todosToRemove = [];
             this.router.navigate([('')]);
           });
         }
